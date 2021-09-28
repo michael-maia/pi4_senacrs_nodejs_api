@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const teamController = require('../controller/team_controller')
+const teamController = require('../controllers/team_controller')
 
 router.get('/', teamController.showList)
 router.get('/search', teamController.search)
