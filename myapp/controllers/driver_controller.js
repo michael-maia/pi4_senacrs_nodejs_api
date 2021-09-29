@@ -13,7 +13,7 @@ exports.showList = (req, res) => {
 exports.findById = (req, res) => {
     const id = req.params.id;
 
-    Driver.findfindById(id, (err, driver) => {
+    Driver.findById(id, (err, driver) => {
         if(err){
             res.status(500).send(err);
         }
@@ -58,11 +58,11 @@ exports.update = (req, res) => {
 exports.delete = (req, res) => {
     const id = req.params.id;
 
-    Team.findByIdAndDelete(id, (err, driverDeleted) => {
+    Driver.findByIdAndDelete(id, (err, driverDeleted) => {
         if(err){
             res.status(500).send(err);
         }
-        if(teamDeleted){
+        if(driverDeleted){
             //res.json(teamDeleted);
             res.json("DRIVER REMOVED!");
         }
