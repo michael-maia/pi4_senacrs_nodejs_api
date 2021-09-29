@@ -73,7 +73,8 @@ exports.delete = (req, res) => {
         }
         // Caso tenha achado o produto (if produto == true)
         if(teamDeleted){
-            res.json(teamDeleted);
+            //res.json(teamDeleted);
+            res.json("TEAM REMOVED!");
         }
         else{
             res.status(404).json({error: "Team not found"});
