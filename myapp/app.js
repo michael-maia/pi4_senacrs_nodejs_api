@@ -5,6 +5,7 @@ const port = 3000
 
 // IMPORTAR ROTAS
 const teamRoute = require('./routes/team_routes');
+const driverRoute = require('./routes/driver_routes');
 
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
@@ -35,6 +36,7 @@ mongoose.Promise = global.Promise;
 
 // USO DAS ROTAS
 app.use('/api/teams', teamRoute);
+app.use('/api/drivers', driverRoute);
 
 
 app.listen(port, () => {
