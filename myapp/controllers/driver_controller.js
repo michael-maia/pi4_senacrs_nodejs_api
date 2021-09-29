@@ -6,7 +6,7 @@ exports.showList = (req, res) => {
         if(err){
             res.status(500).send(err);
         }
-        res.json(drivers);
+        res.status(200).json(drivers);
     });
 }
 
@@ -19,7 +19,7 @@ exports.findById = (req, res) => {
         }
 
         if(driver){
-            res.json(driver);
+            res.status(200).json(driver);
         }
         else{
             res.status(404).json({error: "Driver not found"});
@@ -32,9 +32,9 @@ exports.create = (req, res) => {
 
     newDriver.save((err, driver) => {
         if(err){
-            res.send(err);
+            res.status(500).send(err);
         }
-        res.status(200).json(driver);
+        res.status(201).json(driver);
     });
 }
 
@@ -47,7 +47,7 @@ exports.update = (req, res) => {
             res.status(500).send(err);
         }
         if(updatedDriver){
-            res.json(updatedDriver);
+            res.status(200).json(updatedDriver);
         }
         else{
             res.status(404).json({error: "Driver not found"});
@@ -64,7 +64,7 @@ exports.delete = (req, res) => {
         }
         if(driverDeleted){
             //res.json(teamDeleted);
-            res.json("DRIVER REMOVED!");
+            res.status(200).json("DRIVER REMOVED!");
         }
         else{
             res.status(404).json({error: "Driver not found"});

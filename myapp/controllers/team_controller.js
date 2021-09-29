@@ -9,7 +9,7 @@ exports.showList = (req, res) => {
             res.status(500).send(err);
         }
         // Retorna todos os registros em formato JSON
-        res.json(teams);
+        res.status(200).json(teams);
     });
 }
 
@@ -24,7 +24,7 @@ exports.findById = (req, res) => {
 
         // Caso tenha achado a equipe (if team == true)
         if(team){
-            res.json(team);
+            res.status(200).json(team);
         }
         else{
             res.status(404).json({error: "Team not found"});
@@ -39,9 +39,9 @@ exports.create = (req, res) => {
     // Usando função save() do mongoDB para confirmar a inserção dos dados no banco
     newTeam.save((err, team) => {
         if(err){
-            res.send(err);
+            res.status(500).send(err);
         }
-        res.status(200).json(team);
+        res.status(201).json(team);
     });
 }
 
@@ -55,7 +55,7 @@ exports.update = (req, res) => {
             res.status(500).send(err);
         }
         if(updatedTeam){
-            res.json(updatedTeam);
+            res.status(200).json(updatedTeam);
         }
         else{
             res.status(404).json({error: "Team not found"});
@@ -72,7 +72,7 @@ exports.delete = (req, res) => {
         }
         if(teamDeleted){
             //res.json(teamDeleted);
-            res.json("TEAM REMOVED!");
+            res.status(200).json("TEAM REMOVED!");
         }
         else{
             res.status(404).json({error: "Team not found"});
