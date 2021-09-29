@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 // Definindo o formato do Schema
 const TeamSchema = new Schema({
     fullName: String,
-    country: String,
+    nationality: String,
     firstYearEntry: Number,
     racesEntered: Number,
     raceVictories: Number,
