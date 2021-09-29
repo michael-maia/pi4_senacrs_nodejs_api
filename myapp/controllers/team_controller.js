@@ -54,7 +54,6 @@ exports.update = (req, res) => {
         if(err){
             res.status(500).send(err);
         }
-        // Caso tenha achado o produto (if produto == true)
         if(updatedTeam){
             res.json(updatedTeam);
         }
@@ -71,7 +70,6 @@ exports.delete = (req, res) => {
         if(err){
             res.status(500).send(err);
         }
-        // Caso tenha achado o produto (if produto == true)
         if(teamDeleted){
             //res.json(teamDeleted);
             res.json("TEAM REMOVED!");
