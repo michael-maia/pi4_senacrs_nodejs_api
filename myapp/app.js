@@ -1,16 +1,20 @@
 const express = require('express')
-const app = express()
 const mongoose = require('mongoose')
+const app = express()
 const port = 3000
 
-// IMPORTAR ROTAS
+// Importando as Rotas
 const teamRoute = require('./routes/team_routes');
 const driverRoute = require('./routes/driver_routes');
+const userRoute = require('./routes/user_routes');
+
+// Importando user_controller para validacao do token
+const userController = require('./controllers/user_controller');
 
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
-// CONFIGURAÇÃO DO MONGOOSE
+// Configuracao do Mongoose
 mongoose.connect('mongodb://localhost:27017/f1_project')
   .then(() => {
     console.log('Database connected!')
@@ -19,24 +23,10 @@ mongoose.connect('mongodb://localhost:27017/f1_project')
   });
 mongoose.Promise = global.Promise;
 
-// EXEMPLO DE MIDDLEWARE
-/* app.use((req, res, next) => {
-    console.log(`Request Time ${Date.now()}`);
-    console.log(`Request Method: ${req.method}`);
-    // Sem o next() a aplicação vai ficar rodando até dar TimeOut e não vai prosseguir com o código
-    next();
-    // Forma de incluir um bloqueio de métodos neste middleware
-    /* if(req.method == 'GET'){
-        next();
-    }
-    else{
-        res.status(405).send("Metodo não permitido");
-    }
-}); */
-
-// USO DAS ROTAS
-app.use('/api/teams', teamRoute);
-app.use('/api/drivers', driverRoute);
+// Uso das rotas
+app.use('/api/teams', userController.tokenValidation, teamRoute);
+app.use('/api/drivers', userController.tokenValidation, driverRoute);
+app.use('/api/users', userRoute);
 
 
 app.listen(port, () => {
