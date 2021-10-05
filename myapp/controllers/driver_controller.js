@@ -1,5 +1,6 @@
 // Importando schema/model criado no arquivo
 const Driver = require('../models/driver');
+const Team = require('../models/team');
 
 exports.showList = (req, res) => {
     Driver.find({}, (err, drivers) => {
@@ -93,3 +94,18 @@ exports.search = (req, res) => {
         res.status(400).send({error: "Parameter 'name' is required"});
     }
 };
+
+// Funciona caso a propriedade Teams não seja ARRAY
+exports.showTeams = (req, res) => {
+    if(req.query && req.query.driverName){
+        const paramName = req.query.driverName;
+        console.log(paramName);
+        Driver.findOne({fullName: paramName}).populate('teams').
+        exec((err, driver) => {
+            if(err){
+                res.status(500).send(err);
+            }
+            res.status(200).json(driver.teams.fullName);
+        })
+    }
+}

@@ -7,7 +7,7 @@ const DriverSchema = new Schema({
     carNumber: Number,
     championshipsVictories: Number,
     raceVictories: Number,
-    team: {type: 'ObjectId', ref: 'Team'}
+    teams: {type: 'ObjectId', ref: 'Team'}
 });
 
 module.exports = mongoose.model('Driver', DriverSchema);
