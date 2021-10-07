@@ -7,6 +7,7 @@ const port = 3000
 const teamRoute = require('./routes/team_routes');
 const driverRoute = require('./routes/driver_routes');
 const userRoute = require('./routes/user_routes');
+const roleRoute = require('./routes/role_routes');
 
 // Importando user_controller para validacao do token
 const userController = require('./controllers/user_controller');
@@ -19,7 +20,7 @@ mongoose.connect('mongodb://localhost:27017/f1_project')
   .then(() => {
     console.log('Database connected!')
   }).catch((error) => {
-    console.log('Cant connect do Databse')
+    console.log('Cant connect to Databse')
   });
 mongoose.Promise = global.Promise;
 
@@ -27,6 +28,7 @@ mongoose.Promise = global.Promise;
 app.use('/api/teams', userController.tokenValidation, teamRoute);
 app.use('/api/drivers', userController.tokenValidation, driverRoute);
 app.use('/api/users', userRoute);
+app.use('/api/roles', roleRoute);
 
 
 app.listen(port, () => {

@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Role = require('../models/role');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -139,6 +140,35 @@ exports.tokenValidation = (req, res, next) => {
             else{
                 console.log('Payload: '+JSON.stringify(payload));
                 next();
+            }
+        });
+    }
+}
+
+exports.isAdmin = (req, res, next) => {
+    const token = req.get('x-auth-token');
+    if(!token){
+        res.status(401).json({error: "Can't access."});
+    }
+    else{
+        jwt.verify(token, 'Sen@crs', (err, payload) => {
+            if(err){
+                res.status(500).send(err);
+            }
+            else{
+                const user = User.findOne({_id: payload.id}).populate('role').
+                exec((err, user) => {
+                    if(err){
+                        res.status(500).send(err);
+                    }
+                    if(user.role.name === 'Admin'){
+                        console.log(("ADMIN OK"));
+                        next();
+                    }
+                    else{
+                        res.status(403).json({error: "Can't access."});
+                    }
+                })
             }
         });
     }
