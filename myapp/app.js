@@ -1,6 +1,11 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const app = express()
+const dotenv = require("dotenv")
+
+// String de conexão do MongoDB Atlas
+dotenv.config()
+const connectionString = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.3nz0l.mongodb.net/Projeto1?retryWrites=true&w=majority`
 const port = process.env.PORT
 
 // Importando as Rotas
@@ -16,7 +21,7 @@ app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 // Configuracao do Mongoose
-mongoose.connect(process.env.MONGDB_URL)
+mongoose.connect(connectionString)
   .then(() => {
     console.log('Database connected!')
   }).catch((error) => {
