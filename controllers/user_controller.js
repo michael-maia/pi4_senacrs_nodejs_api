@@ -7,7 +7,7 @@ const { response } = require('express');
 exports.showList = (req, res) => {
     User.find({}, (err, users) => {
         if(err){
-            res.status(500).send(err);
+            res.status(500).send({error: "Request error!"});
         }
         res.status(200).json(
                 users.map((user) => {return ({id: user.id, fullName: user.fullName, email: user.email});
@@ -20,7 +20,7 @@ exports.findById = (req, res) => {
     const id = req.params.id;
     User.findById(id, (err, user) => {
         if(err){
-            res.status(500).send(err);
+            res.status(500).send({error: "Request error!"});
         }
         if(user){
             res.status(200).json(user);
@@ -43,7 +43,7 @@ exports.create = (req, res) => {
         newUser.password = bcrypt.hashSync(req.body.password, 10);
         newUser.save((err, user) => {
             if(err){
-                res.status(500).send(err);
+                res.status(500).send({error: "Request error!"});
             }
             res.status(201).send(user);
         });
@@ -63,7 +63,7 @@ exports.update = (req, res) => {
         }
         User.findByIdAndUpdate(id, userUpdate, {new: true}, (err, updatedUser) => {
             if(err){
-                res.status(500).send(err);
+                res.status(500).send({error: "Request error!"});
             }
             if(updatedUser){
                 res.status(200).json(updatedUser);
@@ -79,7 +79,7 @@ exports.delete = (req, res) => {
     const id = req.params.id;
     User.findByIdAndDelete(id, (err, userDeleted) => {
         if(err) {
-            res.status(500).send(err);
+            res.status(500).send({error: "Request error!"});
         }
         if(userDeleted) {
             res.status(200).json(userDeleted);
@@ -117,7 +117,7 @@ exports.userValidation = (req, res) => {
 
         User.findOne({email: userEmail}, (err, user) => {
             if(err){
-                res.status(500).send(err);
+                res.status(500).send({error: "Request error!"});
             }
             // Comparando a senha inserida com a cadastrada no banco de dados
             if(user && bcrypt.compareSync(userPassword, user.password)) {
@@ -165,13 +165,13 @@ exports.isAdmin = (req, res, next) => {
     else{
         jwt.verify(token, 'Sen@crs', (err, payload) => {
             if(err){
-                res.status(500).send(err);
+                res.status(500).send({error: "Request error!"});
             }
             else{
                 const user = User.findOne({_id: payload.id}).populate('role').
                 exec((err, user) => {
                     if(err){
-                        res.status(500).send(err);
+                        res.status(500).send({error: "Request error!"});
                     }
                     if(user.role.name === 'Admin'){
                         console.log(("ADMIN OK"));
@@ -195,7 +195,7 @@ exports.isIdOwner = (req, res, next) => {
     else{
         jwt.verify(token, 'Sen@crs', (err, payload) => {
             if(err){
-                res.status(500).send(err);
+                res.status(500).send({error: "Request error!"});
             }
             else{
                 if(id == payload.id){

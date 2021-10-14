@@ -5,7 +5,7 @@ const Driver = require('../models/driver');
 exports.showList = (req, res) => {
     Driver.find({}, (err, drivers) => {
         if(err){
-            res.status(500).send(err);
+            res.status(500).send({error: "Request error!"});
         }
         res.status(200).json(drivers);
     });
@@ -42,7 +42,7 @@ exports.create = (req, res) => {
     else{
         newDriver.save((err, driver) => {
             if(err){
-                res.status(500).send(err);
+                res.status(500).send({error: "Request error!"});
             }
             res.status(201).json(driver);
         });
@@ -58,7 +58,7 @@ exports.update = (req, res) => {
     else{
         Driver.findByIdAndUpdate(id, driverUpdate, {new: true}, (err, updatedDriver) => {
             if(err){
-                res.status(500).send(err);
+                res.status(500).send({error: "Request error!"});
             }
             if(updatedDriver){
                 res.status(200).json(updatedDriver);
@@ -74,7 +74,7 @@ exports.delete = (req, res) => {
     const id = req.params.id;
     Driver.findByIdAndDelete(id, (err, driverDeleted) => {
         if(err){
-            res.status(500).send(err);
+            res.status(500).send({error: "Request error!"});
         }
         if(driverDeleted){
             //res.json(teamDeleted);
@@ -118,7 +118,7 @@ exports.showTeams = (req, res) => {
         Driver.findOne({fullName: paramName}).populate('teams').
         exec((err, driver) => {
             if(err){
-                res.status(500).send(err);
+                res.status(500).send({error: "Request error!"});
             }
             res.status(200).json(driver.teams.fullName);
         })

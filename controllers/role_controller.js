@@ -3,7 +3,7 @@ const Role = require('../models/role');
 exports.showList = (req, res) => {
     Role.find({}, (err, roles) => {
         if(err){
-            res.status(500).send(err);
+            res.status(500).send({error: "Request error!"});
         }
         res.status(200).json(roles);
     });
@@ -17,7 +17,7 @@ exports.create = (req, res) => {
     else{
         newRole.save((err, role) => {
             if(err){
-                res.status(500).send(err);
+                res.status(500).send({error: "Request error!"});
             }
             res.status(201).json(role);
         });
@@ -33,7 +33,7 @@ exports.update = (req, res) => {
     else{
         Role.findByIdAndUpdate(id, roleUpdate, {new: true}, (err, updatedRole) => {
             if(err){
-                res.status(500).send(err);
+                res.status(500).send({error: "Request error!"});
             }
             if(updatedRole){
                 res.status(200).json(updatedRole);
@@ -49,7 +49,7 @@ exports.delete = (req, res) => {
     const id = req.params.id;
     Role.findByIdAndDelete(id, (err, roleDeleted) => {
         if(err){
-            res.status(500).send(err);
+            res.status(500).send({error: "Request error!"});
         }
         if(roleDeleted){
             res.status(200).json("ROLE REMOVED");
