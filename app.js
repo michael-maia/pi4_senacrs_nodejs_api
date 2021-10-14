@@ -6,6 +6,7 @@ const dotenv = require("dotenv")
 // String de conexão do MongoDB Atlas
 dotenv.config()
 const connectionString = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.3nz0l.mongodb.net/Projeto1?retryWrites=true&w=majority`
+//const connectionString = process.env.MONGODB_LOCAL
 const port = process.env.PORT
 
 // Importando as Rotas
@@ -37,6 +38,6 @@ app.use('/api/roles', userController.isAdmin, roleRoute);
 
 console.log("TESTE")
 
-/* app.listen(port, () => {
+app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`)
-}) */
+})
