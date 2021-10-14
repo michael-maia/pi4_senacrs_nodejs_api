@@ -38,7 +38,7 @@ exports.create = (req, res) => {
     }
     else{
         // Atribuindo automaticamente o role de Visitante
-        newUser.role = "615f7584a673d7ff7d2bfc42";
+        newUser.role = "6168a15d06ed38c197056aff";
         // Encriptando a senha do usuario antes de adicionar no banco de dados
         newUser.password = bcrypt.hashSync(req.body.password, 10);
         newUser.save((err, user) => {
@@ -174,7 +174,7 @@ exports.isAdmin = (req, res, next) => {
                         res.status(500).send({error: "Request error!"});
                     }
                     if(user.role.name === 'Admin'){
-                        console.log(("ADMIN OK"));
+                        //console.log(("ADMIN OK"));
                         next();
                     }
                     else{
