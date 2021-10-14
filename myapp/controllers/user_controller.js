@@ -1,7 +1,8 @@
 const User = require('../models/user');
-const Role = require('../models/role');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+var mongoose = require('mongoose');
+const { response } = require('express');
 
 exports.showList = (req, res) => {
     User.find({}, (err, users) => {
@@ -9,7 +10,7 @@ exports.showList = (req, res) => {
             res.status(500).send(err);
         }
         res.status(200).json(
-            users.map((user) => {return({id: user.id, fullName: user.fullName, email: user.email});
+                users.map((user) => {return ({id: user.id, fullName: user.fullName, email: user.email});
             })
         );
     })
@@ -32,34 +33,46 @@ exports.findById = (req, res) => {
 
 exports.create = (req, res) => {
     let newUser = new User(req.body);
-    // Encriptando a senha do usuario antes de adicionar no banco de dados
-    newUser.password = bcrypt.hashSync(req.body.password, 10);
-    newUser.save((err, user) => {
-        if(err){
-            res.status(500).send(err);
-        }
-        res.status(201).json(newUser);
-    });
+    if(!newUser || !newUser.fullName || !newUser.email || !newUser.password){
+        res.status(400).send({error: "JSON parameters cannot be Null or Empty"});
+    }
+    else{
+        // Atribuindo automaticamente o role de Visitante
+        newUser.role = "615f7584a673d7ff7d2bfc42";
+        // Encriptando a senha do usuario antes de adicionar no banco de dados
+        newUser.password = bcrypt.hashSync(req.body.password, 10);
+        newUser.save((err, user) => {
+            if(err){
+                res.status(500).send(err);
+            }
+            res.status(201).send(user);
+        });
+    }
 }
 
 exports.update = (req, res) => {
     const id = req.params.id;
     const userUpdate = req.body;
-    // Se o usuario alterar a senha, ela deve ser encriptada novamente
-    if(req.body.password){
-        userUpdate.password = bcrypt.hashSync(req.body.password, 10);
+    if(!userUpdate || !userUpdate.fullName || !userUpdate.email || !userUpdate.password){
+        res.status(400).send({error: "JSON parameters cannot be Null or Empty"});
     }
-    User.findByIdAndUpdate(id, userUpdate, {new: true}, (err, updatedUser) => {
-        if(err){
-            res.status(500).send(err);
+    else{
+        // Se o usuario alterar a senha, ela deve ser encriptada novamente
+        if(req.body.password){
+            userUpdate.password = bcrypt.hashSync(req.body.password, 10);
         }
-        if(updatedUser){
-            res.status(200).json(updatedUser);
-        }
-        else{
-            res.status(404).json({error: 'User not found'});
-        }
-    });
+        User.findByIdAndUpdate(id, userUpdate, {new: true}, (err, updatedUser) => {
+            if(err){
+                res.status(500).send(err);
+            }
+            if(updatedUser){
+                res.status(200).json(updatedUser);
+            }
+            else{
+                res.status(404).json({error: 'User not found'});
+            }
+        });
+    }
 }
 
 exports.delete = (req, res) => {
@@ -77,7 +90,7 @@ exports.delete = (req, res) => {
     })
 }
 
-exports.search = (req, res) => {
+/* exports.search = (req, res) => {
     if(req.query && req.query.fullName){
         const paramName = req.query.fullName;
         User.findOne({fullName: paramName}, (err, user) => {
@@ -95,7 +108,7 @@ exports.search = (req, res) => {
     else{
         res.status(404).json({error: 'Parameter "fullName" is missing'});
     }
-}
+} */
 
 exports.userValidation = (req, res) => {
     if(req.body && req.body.email && req.body.password) {
@@ -138,7 +151,6 @@ exports.tokenValidation = (req, res, next) => {
             }
             // Estando tudo OK, ele passa para o proxima etapa do codigo
             else{
-                console.log('Payload: '+JSON.stringify(payload));
                 next();
             }
         });
@@ -173,3 +185,79 @@ exports.isAdmin = (req, res, next) => {
         });
     }
 }
+
+exports.isIdOwner = (req, res, next) => {
+    const id = req.params.id;
+    const token = req.get('x-auth-token');
+    if(!token){
+        res.status(400).json({error: "Invalid token"});
+    }
+    else{
+        jwt.verify(token, 'Sen@crs', (err, payload) => {
+            if(err){
+                res.status(500).send(err);
+            }
+            else{
+                if(id == payload.id){
+                    next();
+                }
+                else{
+                    res.status(403).json({error: "Can't access."});
+                }
+            }
+        });
+    }
+}
+
+exports.changeRole = (req, res) => {
+    const userId = req.params.id;
+    const roleId = req.body.roleId;
+
+    //userUpdate = User.findById(userId);
+    //userUpdate.role = roleId;
+    User.updateOne({_id: userId}, {
+        role: roleId
+    }, function(err, affected, resp) {
+        res.status(200).json({success: "Role updated"});
+        console.log(resp);
+    })
+    /* User.findByIdAndUpdate(userId, userUpdate, {new: true}, (err, updatedUser) => {
+        if(err){
+            res.status(500).send(err);
+        }
+        if(updatedUser){
+            res.status(200).json(updatedUser);
+        }
+        else{
+            res.status(404).json({error: 'User not found'});
+        }
+    }); */
+}
+
+/* exports.isModerator = (req, res, next) => {
+    const token = req.get('x-auth-token');
+    if(!token){
+        res.status(401).json({error: "Can't access."});
+    }
+    else{
+        jwt.verify(token, 'Sen@crs', (err, payload) => {
+            if(err){
+                res.status(500).send(err);
+            }
+            else{
+                const user = User.findOne({_id: payload.id}).populate('role').
+                exec((err, user) => {
+                    if(err){
+                        res.status(500).send(err);
+                    }
+                    if(user.role.name === 'Moderator'){
+                        next();
+                    }
+                    else{
+                        res.status(403).json({error: "Can't access."});
+                    }
+                })
+            }
+        });
+    }
+} */

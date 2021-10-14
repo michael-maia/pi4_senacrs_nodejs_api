@@ -16,12 +16,10 @@ exports.showList = (req, res) => {
 exports.findById = (req, res) => {
     // Utiliza o ID enviado na URI
     const id = req.params.id;
-
     Team.findById(id, (err, team) => {
         if(err){
             res.status(500).send(err);
         }
-
         // Caso tenha achado a equipe (if team == true)
         if(team){
             res.status(200).json(team);
@@ -35,20 +33,26 @@ exports.findById = (req, res) => {
 exports.create = (req, res) => {
     // Cria uma instância de Team utilizando os parametros do Body da requisição
     let newTeam = new Team(req.body);
-
-    // Usando função save() do mongoDB para confirmar a inserção dos dados no banco
-    newTeam.save((err, team) => {
-        if(err){
-            res.status(500).send(err);
-        }
-        res.status(201).json(team);
-    });
+    if(!newTeam || !newTeam.fullName || !newTeam.nationality || !newTeam.firstYearEntry){
+        res.status(400).send({error: "JSON parameters cannot be Null or Empty"});
+    }
+    else{
+        // Usando função save() do mongoDB para confirmar a inserção dos dados no banco
+        newTeam.save((err, team) => {
+            if(err){
+                res.status(500).send(err);
+            }
+            res.status(201).json(team);
+        });
+    }
 }
 
 exports.update = (req, res) => {
     const id = req.params.id;
     const teamUpdate = req.body;
-
+    if(!teamUpdate || !teamUpdate.fullName || !teamUpdate.nationality || !teamUpdate.firstYearEntry){
+        res.status(400).send({error: "JSON parameters cannot be Null or Empty"});
+    }
     // {new:true} -> Esta opção faz com que o retorno da API mostre o valor atualizado e não o antigo que já consta no DB
     Team.findByIdAndUpdate(id, teamUpdate, {new: true}, (err, updatedTeam) => {
         if(err){
@@ -65,7 +69,6 @@ exports.update = (req, res) => {
 
 exports.delete = (req, res) => {
     const id = req.params.id;
-
     Team.findByIdAndDelete(id, (err, teamDeleted) => {
         if(err){
             res.status(500).send(err);
@@ -80,7 +83,7 @@ exports.delete = (req, res) => {
     });
 }
 
-exports.search = (req, res) => {
+/* exports.search = (req, res) => {
     // Verifica se existe query na URI e se tem o parametro "nome" nela
     if(req.query && req.query.name){
         const paramName = req.query.name;
@@ -100,4 +103,4 @@ exports.search = (req, res) => {
     else{
         res.status(400).send({error: "Parameter 'name' is required"});
     }
-};
+}; */

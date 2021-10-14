@@ -20,17 +20,17 @@ mongoose.connect('mongodb://localhost:27017/f1_project')
   .then(() => {
     console.log('Database connected!')
   }).catch((error) => {
-    console.log('Cant connect to Databse')
+    console.log(error)
   });
 mongoose.Promise = global.Promise;
 
 // Uso das rotas
-app.use('/api/teams', userController.tokenValidation, teamRoute);
-app.use('/api/drivers', userController.tokenValidation, driverRoute);
+app.use('/api/teams', teamRoute);
+app.use('/api/drivers', driverRoute);
 app.use('/api/users', userRoute);
-app.use('/api/roles', roleRoute);
+app.use('/api/roles', userController.isAdmin, roleRoute);
 
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+  console.log(`App listening at http://localhost:${port}`)
 })
