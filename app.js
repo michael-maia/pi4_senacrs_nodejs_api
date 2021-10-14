@@ -35,7 +35,8 @@ app.use('/api/drivers', driverRoute);
 app.use('/api/users', userRoute);
 app.use('/api/roles', userController.isAdmin, roleRoute);
 
+console.log("TESTE")
 
-app.listen(port, () => {
+/* app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`)
-})
+}) */
