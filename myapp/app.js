@@ -1,7 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const app = express()
-const port = 3000
+const port = process.env.PORT
 
 // Importando as Rotas
 const teamRoute = require('./routes/team_routes');
@@ -16,7 +16,7 @@ app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 // Configuracao do Mongoose
-mongoose.connect('mongodb://localhost:27017/f1_project')
+mongoose.connect(process.env.MONGDB_URL)
   .then(() => {
     console.log('Database connected!')
   }).catch((error) => {
