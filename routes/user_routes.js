@@ -9,7 +9,7 @@ router.get('/:id', userController.tokenValidation, userController.isAdmin, userC
 router.post('/', userController.create);
 router.post('/login', userController.userValidation);
 router.put('/:id', userController.tokenValidation, userController.isIdOwner, userController.update);
-router.put('/role/:id', userController.tokenValidation, userController.isAdmin, userController.changeRole);
+//router.put('/role/:id', userController.tokenValidation, userController.isAdmin, userController.changeRole);
 router.delete('/:id', userController.isAdmin, userController.delete);
 
 module.exports = router;
