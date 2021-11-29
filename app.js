@@ -1,6 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const app = express()
+const cors = require('cors')
 const dotenv = require("dotenv")
 
 // String de conexão do MongoDB Atlas
@@ -18,6 +19,7 @@ const roleRoute = require('./routes/role_routes');
 // Importando user_controller para validacao do token
 const userController = require('./controllers/user_controller');
 
+app.use(cors());
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
