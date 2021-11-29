@@ -9,7 +9,9 @@ router.get('/showTeams', driverController.showTeams);
 router.get('/:id', driverController.findById);
 //router.post('/', userController.tokenValidation, userController.isAdmin, driverController.create);
 router.post('/', driverController.create);
-router.put('/:id', userController.tokenValidation, userController.isAdmin, driverController.update);
-router.delete('/:id', userController.tokenValidation, userController.isAdmin, driverController.delete);
+//router.put('/:id', userController.tokenValidation, userController.isAdmin, driverController.update);
+router.put('/:id', driverController.update);
+//router.delete('/:id', userController.tokenValidation, userController.isAdmin, driverController.delete);
+router.delete('/:id', driverController.delete);
 
 module.exports = router;
