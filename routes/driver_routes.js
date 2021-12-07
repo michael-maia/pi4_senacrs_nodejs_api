@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const driverController = require('../controllers/driver_controller');
-const userController = require('../controllers/user_controller');
+//const userController = require('../controllers/user_controller');
 
 router.get('/', driverController.showList);
 //router.get('/search', driverController.search);
